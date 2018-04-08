@@ -10,7 +10,7 @@ void* Producer()
 {
     std::cout << __func__ << ": entering" << std::endl;
 
-    while(1)
+    while(true)
     {
         std::cout << __func__ << ": done" << std::endl;
 
@@ -29,8 +29,8 @@ void* Producer()
 void* Consumer()
 {
     printf("%s entering...", __func__);
-    fflush(stdout);
-    while(1)
+
+    while(true)
     {
         std::cout << __func__ << ": done" << std::endl;
         {

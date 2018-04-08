@@ -40,8 +40,7 @@ void* Consumer()
             std::unique_lock<std::mutex> mutex(data_available_mutex);
 
             std::cout << __func__ << ": checking if data is available." << std::endl;
-            while(!isDataAvailable)
-                cond.wait(mutex, [] { return isDataAvailable; });
+            cond.wait(mutex, [] { return isDataAvailable; });
             while(isDataAvailable > 0)
             {
                 std::cout << __func__ << ": data read " << isDataAvailable << std::endl;

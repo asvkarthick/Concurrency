@@ -28,7 +28,7 @@ void* Producer()
 
 void* Consumer()
 {
-    printf("%s entering...", __func__);
+    std::cout << __func__ << ": entering" << std::endl;
 
     while(true)
     {

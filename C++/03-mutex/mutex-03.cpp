@@ -2,9 +2,11 @@
 #include <chrono>
 #include <thread>
 #include <mutex>
+#include <condition_variable>
 
 int isDataAvailable = 0;
 std::mutex data_available_mutex;
+std::condition_variable cond;
 
 void* Producer()
 {
@@ -12,13 +14,15 @@ void* Producer()
 
     while(true)
     {
-        data_available_mutex.lock();
         std::cout << __func__ << ": done" << std::endl;
 
-        isDataAvailable++;
-        std::cout << __func__ << ": data ready " << isDataAvailable << std::endl;
+        {
+            std::lock_guard<std::mutex> mutex(data_available_mutex);
+            isDataAvailable++;
+            std::cout << __func__ << ": data ready " << isDataAvailable << std::endl;
+        }
+        cond.notify_one();
 
-        data_available_mutex.unlock();
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 
@@ -31,17 +35,20 @@ void* Consumer()
 
     while(true)
     {
-        data_available_mutex.lock();
         std::cout << __func__ << ": done" << std::endl;
-
-        std::cout << __func__ << ": checking if data is available." << std::endl;
-        while(isDataAvailable > 0)
         {
-            std::cout << __func__ << ": data read " << isDataAvailable << std::endl;
-            isDataAvailable--;
+            std::unique_lock<std::mutex> mutex(data_available_mutex);
+
+            std::cout << __func__ << ": checking if data is available." << std::endl;
+            while(!isDataAvailable)
+                cond.wait(mutex, [] { return isDataAvailable; });
+            while(isDataAvailable > 0)
+            {
+                std::cout << __func__ << ": data read " << isDataAvailable << std::endl;
+                isDataAvailable--;
+            }
         }
 
-        data_available_mutex.unlock();
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 

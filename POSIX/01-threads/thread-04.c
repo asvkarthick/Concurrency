@@ -23,6 +23,9 @@ int main(void)
         fprintf(stderr, "Error: creating thread.\n");
         return -1;
     }
+
+    pthread_attr_destroy(&attr);
+
     printf("This is main thread.\n");
     sleep(1);
     return 0;

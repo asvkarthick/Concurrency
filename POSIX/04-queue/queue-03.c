@@ -119,13 +119,6 @@ int dequeue_producer()
 {
         int buffer_index = front_element_producer();
 
-        /*
-        while(buffer_index == -1 && running == true) {
-                usleep(100);
-                buffer_index = front_element_producer();
-        }
-        */
-
         pthread_mutex_lock(&producer_lock);
 
         while(buffer_index == -1 && running == true) {
@@ -143,13 +136,6 @@ int dequeue_producer()
 int dequeue_consumer()
 {
         int buffer_index = front_element_consumer();
-
-        /*
-        while(buffer_index == -1 && running == true) {
-                usleep(100);
-                buffer_index = front_element_consumer();
-        }
-        */
 
         pthread_mutex_lock(&consumer_lock);
 

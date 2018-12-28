@@ -18,16 +18,14 @@ unsigned char image_buffer[WIDTH * HEIGHT];
 
 int main(void)
 {
-    struct timeval start, end;
-    long seconds, useconds;
+    struct timeval start, end, diff;
 
     // Profile time to fill the image buffer
     gettimeofday(&start, 0);
     CreateImage(image_buffer, WIDTH, HEIGHT);
     gettimeofday(&end, 0);
-    seconds  = end.tv_sec  - start.tv_sec;
-    useconds = end.tv_usec - start.tv_usec;
-    printf("Time taken = %ld micro seconds\n", useconds);
+    timersub(&end, &start, &diff);
+    printf("Time taken = %ld micro seconds\n", diff.tv_usec);
 
     return 0;
 }
